@@ -36,6 +36,19 @@ El dataset original puede ser encontrado en el siguiente enlace:
 - **Visualización del Rendimiento:** Análisis de los resultados del entrenamiento y evaluación del modelo para detectar overfitting o underfitting.
 - **Guardar el Modelo:** Guardar el modelo entrenado para su uso futuro.
 
+## Preprocesamiento y Data Augmentation 📈
+Para mejorar el rendimiento del modelo y evitar el sobreajuste, se aplicaron técnicas de preprocesamiento y data augmentation a los datos de entrenamiento. El preprocesamiento y la data augmentation son pasos cruciales en el desarrollo de modelos de deep learning, especialmente en tareas de clasificación de imágenes.
+
+### Normalización
+Para la normalización de los valores de los píxeles, se utilizó `ImageDataGenerator` de Keras con el parámetro `rescale=1./255`. Esto escala los valores de los píxeles de [0, 255] a [0, 1], lo cual es beneficioso porque los modelos de redes neuronales tienden a converger más rápido y de manera más estable cuando los valores de entrada están en un rango más pequeño y uniforme.
+
+### Data Augmentation
+La data augmentation se implementó usando diversas transformaciones para aumentar la variabilidad del conjunto de entrenamiento. Las transformaciones incluyeron rotación, zoom y volteo horizontal. Estas técnicas ayudan al modelo a generalizar mejor al introducir variaciones que el modelo puede encontrar en datos no vistos durante el entrenamiento.
+
+### Generadores de Datos
+Se crearon generadores de datos para los conjuntos de entrenamiento, validación y prueba utilizando ImageDataGenerator. Estos generadores permiten cargar las imágenes en lotes y aplicar las transformaciones definidas en tiempo real, optimizando así el uso de memoria y el rendimiento del entrenamiento.
+
+
 ## Primera Implementación del Modelo 🧠
 La implementación del modelo se basó en una arquitectura de red neuronal convolucional (CNN) por su eficiencia en problemas de clasificación de imagenes como lo es en el caso de este proyecto.
 En la CNN se implementaron varias capas de convolución y pooling ara extraer las características de las imágenes, seguidas de capas densas para realizar la clasificación final.

@@ -45,11 +45,12 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from PIL import Image
 
-"""## Directorios de Train y Test"""
+"""## Directorios de Train, Test y Validation"""
 
 base_dir = 'Dataset'
 train_dir = os.path.join(base_dir, 'train')
 test_dir = os.path.join(base_dir, 'test')
+validation_dir = os.path.join(base_dir, 'validation')
 
 """## Para sacar las rutas de las imagenes y sus categorias"""
 
@@ -101,41 +102,56 @@ train_datagen = ImageDataGenerator(
     rescale = 1./255,
     rotation_range = 100,
     zoom_range = 0.3,
-    horizontal_flip = True
+    horizontal_flip = True,
 )
+
+# Se define el generador de datos para el conjunto de validación (solo normalización)
+validation_datagen = ImageDataGenerator(rescale=1.0/255.0)
+
+# Se define el generador de datos para el conjunto de prueba (solo normalización)
+test_datagen = ImageDataGenerator(rescale=1.0/255.0)
+
+"""Se normaliza las imagenes de test y se generan con el mismo tamaño y el one-hot encoding"""
 
 # Crear el generador de datos para el conjunto train
 train_generator = train_datagen.flow_from_directory(
     train_dir,
     target_size = (150,150),
-    batch_size = 8,
+    batch_size = 32,
+    color_mode = 'rgb',
     class_mode = 'categorical' # Hace one-hot encoding para las categorias (0,0,1,0,0,0.....)
 )
 
-"""Se normaliza las imagenes de test y se generan con el mismo tamaño y el one-hot encoding"""
+# Crear el generador de datos para el conjunto de validación
+validation_generator = validation_datagen.flow_from_directory(
+    validation_dir,          # Directorio de datos de validación
+    target_size=(150, 150),  # Redimensionar las imágenes a 64x64 píxeles
+    batch_size=32,            # Número de imágenes por lote
+    color_mode = 'rgb',
+    class_mode='categorical' # Clasificación categórica
+)
 
-# Generator que solo normaliza las imagenes de test
-test_datagen = ImageDataGenerator(rescale=1.0/255.0)
-
-# Crear el generador de datos para el conjunto test
+# Crear el generador de datos para el conjunto de prueba
 test_generator = test_datagen.flow_from_directory(
-    test_dir,
-    target_size = (150, 150),
-    batch_size = 8,  # Tamaño del lote
-    class_mode = 'categorical'
+    test_dir,                # Directorio de datos de prueba
+    target_size=(150, 150),  # Redimensionar las imágenes a 150x150 píxeles
+    batch_size=32,           # Número de imágenes por lote
+    color_mode = 'rgb',
+    class_mode='categorical' # Clasificación categórica
 )
 
 """## Visualización de Imagenes Aumentadas"""
 
-augmented_images = [train_generator[0][0][1] for _ in range(5)]
+# Visualizar algunas imágenes aumentadas del conjunto de entrenamiento
+augmented_images = [train_generator[0][0][i] for i in range(5)]
 
 # Mostrar las imágenes aumentadas
 plt.figure(figsize=(15, 10))
 for i in range(5):
     plt.subplot(1, 5, i + 1)
     plt.imshow(augmented_images[i])
+    plt.title(f'Augmented Image {i+1}', fontsize=12)
     plt.axis('off')
-
 plt.tight_layout()
 plt.show()
 
@@ -145,3 +161,63 @@ plt.show()
 *   Entrenamiento
 *   Evaluación de modelo
 """
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+
+model = Sequential([
+    Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)), # Primera capa convolucional
+    MaxPooling2D((2, 2)),  # Primera capa de pooling
+    Conv2D(64, (3, 3), activation='relu'),  # Segunda capa convolucional
+    MaxPooling2D((2, 2)),  # Segunda capa de pooling
+    Conv2D(128, (3, 3), activation='relu'), # Tercera capa convolucional
+    MaxPooling2D((2, 2)),  # Tercera capa de pooling
+    Flatten(),  # Aplanar la salida de la última capa de pooling
+    Dense(512, activation='relu'),  # Capa densa con 512 neuronas
+    Dropout(0.5),  # Regularización con dropout
+    Dense(len(train_generator.class_indices), activation='softmax')  # Capa de salida
+])
+
+# Compilar el modelo
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+model.summary()
+
+# Entrenar el modelo y guardar el historial del entrenamiento
+history = model.fit(
+    train_generator,
+    steps_per_epoch=train_generator.samples // train_generator.batch_size,
+    epochs=30,
+    validation_data=validation_generator,
+    validation_steps=validation_generator.samples // validation_generator.batch_size
+)
+
+pd.DataFrame(history.history)[['accuracy','val_accuracy']].plot()
+plt.title("Accuracy")
+plt.show()
+
+pd.DataFrame(history.history)[['loss','val_loss']].plot()
+plt.title("Loss")
+plt.show()
+
+# Predict the label of the test_images
+pred = model.predict(test_generator)
+pred = np.argmax(pred,axis=1)
+
+# Map the label
+labels = (train_generator.class_indices)
+labels = dict((v,k) for k,v in labels.items())
+pred = [labels[k] for k in pred]
+
+y_test = [labels[k] for k in test_generator.classes]
+
+from sklearn.metrics import accuracy_score
+acc = accuracy_score(y_test, pred)
+print(f'Accuracy on the test set: {100*acc:.2f}%')
+
+# Guardar el modelo completo en el sistema de archivos temporal
+model.save('fruit_vegetable_classifier_Simple.h5')
+
+# Guardar el modelo en Google Drive
+model_save_path = '/content/drive/MyDrive/IA_8vo/Proyecto IA/fruit_vegetable_classifier_Simple.h5'
+model.save(model_save_path)

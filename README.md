@@ -31,7 +31,7 @@ El dataset original puede ser encontrado en el siguiente enlace:
 - **Directorio de Datos:** Se definen los directorios que contienen los datos tanto de entrenamiento como de prueba (Train, Test)
 - **Visualización del Dataset:** Mostrar ejemplos aleatorios de imagenes con sus categorías correspondientes.
 - **Data Augmentation:** Se aplica Data Augmentation al conjunto de entrenamiento (Se aplican transformaciones como rotación, zoom,  horizontal_flip)
-- ** Primera Implementación del Modelo:** Definición y compilación del modelo inicial.
+- **Primera Implementación del Modelo:** Definición y compilación del modelo inicial.
 - **Entrenamiento del Modelo:** Entrenar el modelo ocupando el conjunto de Train y el de Validation.
 - **Visualización del Rendimiento:** Análisis de los resultados del entrenamiento y evaluación del modelo para detectar overfitting o underfitting.
 - **Guardar el Modelo:** Guardar el modelo entrenado para su uso futuro.

@@ -164,3 +164,51 @@ Dado que la precisión del conjunto de Train y del conjunto de Validation son pa
 ## Siguientes Pasos
 - Implementación de modelo con Transfer Learning de MobileNetV2
 
+## Implementación Final del Modelo utilizando MobileNetV2 🧠🚀
+Para esta implementación, se utilizó el modelo MobileNetV2 preentrenado en ImageNet. Este modelo aprovecha las características aprendidas de grandes datasets y adapta el modelo a la tarea específica de clasificación de frutas y vegetales.
+
+### Preprocesado y Data Augmentation 🖼️
+El `preprocesado` y la `data augmentation` se realizaron de la siguiente manera:
+
+- **Rescale**: Los valores de los píxeles se escalaron a un rango de [0, 1].
+- **Data Augmentation**: Rotación, zoom, desplazamiento horizontal y vertical, transformación de corte y volteo horizontal.
+
+### Estructura del Modelo
+
+1. **MobileNetV2 como Base:**
+    - Se utilizó el modelo MobileNetV2 preentrenado en ImageNet, excluyendo las capas superiores (`include_top=False`). Este modelo se configuró como no entrenable (`trainable=False`) para mantener las características preaprendidas.
+2. **Capas Adicionales:**
+    - `Dense(128, activation="relu"):` Dos capas densas con 128 unidades y la función de activación relu para aprender nuevas características específicas del dataset.
+    - `Dense(36, activation="softmax")`: La capa de salida con 36 unidades y la función de activación softmax para la clasificación de las frutas y vegetales. Referencia Textbook: https://github.com/janishar/mit-deep-learning-book-pdf/blob/master/complete-book-pdf/Ian%20Goodfellow%2C%20Yoshua%20Bengio%2C%20Aaron%20Courville%20-%20Deep%20Learning%20(2017%2C%20MIT).pdf
+
+### Evaluación del Modelo 📊
+Durante la evaluación del modelo, se ha seguido la métrica de evaluación de `Accuracy`, ya que es la técnica utilizada en el paper de Pathak, Rupali. (2021). CLASSIFICATION OF FRUITS USING CONVOLUTIONAL NEURAL NETWORK AND TRANSFER LEARNING MODELS. https://www.researchgate.net/publication/364254116_CLASSIFICATION_OF_FRUITS_USING_CONVOLUTIONAL_NEURAL_NETWORK_AND_TRANSFER_LEARNING_MODELS
+
+- **Epoch 1/5**:
+  - Loss: 1.6736 - Accuracy: 0.5543
+  - Val_Loss: 0.3880 - Val_Accuracy: 0.9014
+
+- **Epoch 5/5**:
+  - Loss: 0.1412 - Accuracy: 0.9563
+  - Val_Loss: 0.1477 - Val_Accuracy: 0.9623
+
+- **Test Set**:
+    - Accuracy on the test set: 96.32%
+
+<p align="center">
+    <img src="https://github.com/Caceres-A01706972/FruitsVegetables/assets/83652905/2b98e5e3-37c7-4c8b-abfb-112351083254" width="45%" />
+    <img src="https://github.com/Caceres-A01706972/FruitsVegetables/assets/83652905/582bc20c-b358-42a3-a76f-80a112c80794" width="45%" />
+</p>
+
+### Análisis del Rendimiento del Modelo
+El modelo muestra una mejora constante en la precisión tanto en el conjunto de entrenamiento como en el de validación a lo largo de las épocas. Los resultados indican una mejora significativa en el rendimiento del modelo a lo largo del tiempo. La precisión final en el conjunto de validación fue del 96.23%, lo que indica una capacidad de generalización robusta.
+
+En resumen, el modelo muestra un excelente rendimiento tanto en los datos de entrenamiento como en los de validación, sin indicios significativos de overfitting o underfitting. La alta precisión en el conjunto de prueba (96.32%) confirma la capacidad del modelo para generalizar bien a datos no vistos durante el entrenamiento.
+
+### Matriz de Confusión
+![image](https://github.com/Caceres-A01706972/FruitsVegetables/assets/83652905/bb367b7c-12eb-40ef-81bb-fc2797813fb8)
+
+### Utilizar Modelo
+![image](https://github.com/Caceres-A01706972/FruitsVegetables/assets/83652905/64cd5897-de39-4195-84ae-982546cae80b)
+
+

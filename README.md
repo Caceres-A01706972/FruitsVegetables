@@ -3,7 +3,7 @@
 ## Descripción del Proyecto 💻
 El objetivo de este proyecto es desarrollar un clasificador de frutas y vegetales utilizando técnicas de aprendizaje automático.
 
-Lo principal es clasificar imágenes estáticas de frutas y vegetales. Pero en futuras versiones se planea extender esta capacidad para clasificar en tiempo real utilizando la cámara, permitiendo llevar un registro de la cantidad de cada producto mostrado. 
+Lo principal es clasificar imágenes estáticas de frutas y vegetales.
 
 Esta funcionalidad está diseñada para facilitar el conteo y seguimiento de productos en un entorno de supermercado.
 
@@ -207,6 +207,10 @@ En resumen, el modelo muestra un excelente rendimiento tanto en los datos de ent
 
 ### Matriz de Confusión
 ![image](https://github.com/Caceres-A01706972/FruitsVegetables/assets/83652905/bb367b7c-12eb-40ef-81bb-fc2797813fb8)
+
+## Clasification Report
+![image](https://github.com/Caceres-A01706972/FruitsVegetables/assets/83652905/977bceac-b1f7-4ac4-bda7-fe587b1715ee)
+
 
 ### Utilizar Modelo
 ![image](https://github.com/Caceres-A01706972/FruitsVegetables/assets/83652905/64cd5897-de39-4195-84ae-982546cae80b)
